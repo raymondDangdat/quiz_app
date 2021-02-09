@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:trivial_app2/screens/home.dart';
+import 'package:trivial_app2/services/auth.dart';
 import './sign_in.dart';
 import '../widgets/widgets.dart';
 class SignUp extends StatefulWidget {
@@ -9,6 +11,25 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
   String name, email, password;
+
+  AuthService authService = new AuthService();
+  bool _isLoading = false;
+  signUp() async{
+    if(_formKey.currentState.validate()){
+      setState(() {
+        _isLoading = true;
+      });
+      await authService.signUpWithEmailAndPassword(email, password).then((value) {
+        if(value != null){
+          setState(() {
+            _isLoading = false;
+          });
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,7 +41,7 @@ class _SignUpState extends State<SignUp> {
         brightness: Brightness.light,
       ),
 
-      body: Form(
+      body: _isLoading ? Container(child: Center(child: CircularProgressIndicator(backgroundColor: Colors.blue,),)) : Form(
         key: _formKey,
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 24.0),
@@ -70,8 +91,7 @@ class _SignUpState extends State<SignUp> {
 
               InkWell(
                 onTap: (){
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder:
-                      (context) => SignIn()));
+                  signUp();
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 18.0),
@@ -81,7 +101,7 @@ class _SignUpState extends State<SignUp> {
                   ),
                   alignment: Alignment.center,
                   width: MediaQuery.of(context).size.width - 48,
-                  child: Text("Sign In", style: TextStyle(color: Colors.white, fontSize: 16.0),),
+                  child: Text("Sign Up", style: TextStyle(color: Colors.white, fontSize: 16.0),),
                 ),
               ),
 
@@ -90,8 +110,14 @@ class _SignUpState extends State<SignUp> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("Already have an account? ", style: TextStyle(fontSize: 15.5),),
-                  Text("Sign Up ", style: TextStyle(fontSize: 15.5,
-                      decoration: TextDecoration.underline),),
+                  InkWell(
+                    onTap: (){
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder:
+                          (context) => SignIn()));
+                    },
+                    child: Text("Sign In", style: TextStyle(fontSize: 15.5,
+                        decoration: TextDecoration.underline),),
+                  ),
                 ],
               ),
               SizedBox(height: 80.0,)

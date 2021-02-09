@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:trivial_app2/screens/home.dart';
+import 'package:trivial_app2/services/auth.dart';
 import './sign_up.dart';
 import '../widgets/widgets.dart';
 
@@ -10,6 +12,27 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
   String email, password;
+
+  AuthService authService = new AuthService();
+
+  bool _isLoading = false;
+
+  signIn() async {
+    if(_formKey.currentState.validate()){
+      setState(() {
+        _isLoading = true;
+      });
+     await authService.signInWithEmailAndPassword(email, password).then((value) {
+       if(value != null){
+         setState(() {
+           _isLoading = false;
+         });
+         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+       }
+     });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +44,7 @@ class _SignInState extends State<SignIn> {
         brightness: Brightness.light,
       ),
 
-      body: Form(
+      body: _isLoading ? Container(child: Center(child: CircularProgressIndicator(),),) : Form(
         key: _formKey,
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 24.0),
@@ -58,6 +81,9 @@ class _SignInState extends State<SignIn> {
               SizedBox(height: 24.0,),
 
               InkWell(
+                onTap: (){
+                  signIn();
+                },
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 18.0),
                   decoration: BoxDecoration(
