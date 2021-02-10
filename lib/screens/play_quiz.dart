@@ -1,12 +1,134 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:trivial_app2/models/question_model.dart';
+import 'package:trivial_app2/services/database.dart';
+import 'package:trivial_app2/widgets/quiz_play_widgets.dart';
+import '../widgets/widgets.dart';
+
 class PlayQuiz extends StatefulWidget {
+  final String quizId;
+  PlayQuiz(this.quizId);
   @override
   _PlayQuizState createState() => _PlayQuizState();
 }
 
+int total = 0;
+int _correct = 0;
+int _inCorrect = 0;
+int _notAttempted = 0;
 class _PlayQuizState extends State<PlayQuiz> {
+  DatabaseService databaseService = new DatabaseService();
+  QuerySnapshot questionsSnapshot;
+
+  QuestionModel getQuestionModelFromDatasnapshot(DocumentSnapshot questionSnapshot){
+    QuestionModel questionModel = new QuestionModel();
+
+    questionModel.question = questionSnapshot.data["question"];
+
+    List<String> options = [
+      questionSnapshot.data["option1"],
+      questionSnapshot.data["option2"],
+      questionSnapshot.data["option3"],
+      questionSnapshot.data["option4"],
+
+    ];
+
+    options.shuffle();
+    questionModel.option1 = options[0];
+    questionModel.option2 = options[1];
+    questionModel.option3 = options[2];
+    questionModel.option4 = options[3];
+    questionModel.correctAnswer = questionSnapshot.data["option1"];
+    questionModel.answered = false;
+
+    return questionModel;
+  }
+
+
+  @override
+  void initState() {
+    databaseService.getQuizData(widget.quizId).then((val){
+
+        questionsSnapshot = val;
+
+        _notAttempted = 0;
+        _correct = 0;
+        _inCorrect =0;
+        total = questionsSnapshot.documents.length;
+
+        print("Total :  $total Correct : ");
+
+        setState(() {
+
+        });
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: appBar(context),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        iconTheme: IconThemeData(
+          color: Colors.black54
+        ),
+        brightness: Brightness.light,
+      ),
+      body: Container(
+        child: Column(
+          children: [
+            questionsSnapshot.documents == null ?
+                Container() :
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: ClampingScrollPhysics(),
+                  itemCount: questionsSnapshot.documents.length,
+                    itemBuilder: (context, index){
+                    return QuizPlayTile(questionModel: getQuestionModelFromDatasnapshot(questionsSnapshot.documents[index]), index: index,);
+                    })
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class QuizPlayTile extends StatefulWidget {
+  final QuestionModel questionModel;
+  final int index;
+  QuizPlayTile({this.questionModel, this.index});
+  @override
+  _QuizPlayTileState createState() => _QuizPlayTileState();
+}
+
+class _QuizPlayTileState extends State<QuizPlayTile> {
+  String optionSelected = "";
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Column(
+        children: [
+          Text(widget.questionModel.question),
+          SizedBox(height: 4.0,),
+          InkWell(
+            onTap: (){
+
+            },
+              child: OptionTile(optionSelected: optionSelected, correctAnswer: widget.questionModel.option1, option: "A", description: widget.questionModel.option1)),
+
+          SizedBox(height: 4.0,),
+          OptionTile(optionSelected: optionSelected, correctAnswer: widget.questionModel.option1, option: "B", description: widget.questionModel.option2),
+
+          SizedBox(height: 4.0,),
+          OptionTile(optionSelected: optionSelected, correctAnswer: widget.questionModel.option1, option: "C", description: widget.questionModel.option3),
+
+          SizedBox(height: 4.0,),
+          OptionTile(optionSelected: optionSelected, correctAnswer: widget.questionModel.option1, option: "D", description: widget.questionModel.option4),
+        ],
+      ),
+    );
   }
 }

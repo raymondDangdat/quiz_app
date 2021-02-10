@@ -12,35 +12,45 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Stream quizStream;
 
-
   DatabaseService databaseService = new DatabaseService();
   Widget quizList() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 24.0),
+        margin: EdgeInsets.symmetric(horizontal: 24.0),
         child: StreamBuilder(
             stream: quizStream,
             builder: (context, snapshot) {
               return snapshot.data == null
-                  ? Container(child: Center(child: CircularProgressIndicator(backgroundColor: Colors.blue,),),)
+                  ? Container(
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          backgroundColor: Colors.blue,
+                        ),
+                      ),
+                    )
                   : ListView.builder(
-                itemCount: snapshot.data.documents.length,
-                  itemBuilder: (context, index){
-                  print(snapshot.data.documents.length);
-                    return QuizTile(imgUrl: "images/java.jpg", title: snapshot.data.documents[index].data['quizTitle'], description: snapshot.data.documents[index].data['quizDescription']);
-                  });
+                      itemCount: snapshot.data.documents.length,
+                      itemBuilder: (context, index) {
+                        return QuizTile(
+                          imgUrl: "images/java.jpg",
+                          title:
+                              snapshot.data.documents[index].data['quizTitle'],
+                          description: snapshot
+                              .data.documents[index].data['quizDescription'],
+                          quidID: snapshot.data.documents[index].data['quizId'],
+                        );
+                      });
             }));
   }
 
   @override
   void initState() {
-    databaseService.getQuizData().then((val){
+    databaseService.getQuizTopics().then((val) {
       setState(() {
         quizStream = val;
       });
     });
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -68,13 +78,19 @@ class QuizTile extends StatelessWidget {
   final String imgUrl;
   final String title;
   final String description;
+  final String quidID;
 
-  QuizTile({@required this.imgUrl, @required this.title, @required this.description});
+  QuizTile(
+      {@required this.imgUrl,
+      @required this.title,
+      @required this.description,
+      @required this.quidID});
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => PlayQuiz()));
+      onTap: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => PlayQuiz(quidID)));
       },
       child: Container(
         height: 150.0,
@@ -82,8 +98,12 @@ class QuizTile extends StatelessWidget {
         child: Stack(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset(imgUrl, width:  MediaQuery.of(context).size.width - 48.0, fit: BoxFit.cover,)),
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.asset(
+                  imgUrl,
+                  width: MediaQuery.of(context).size.width - 48.0,
+                  fit: BoxFit.cover,
+                )),
             Container(
               decoration: BoxDecoration(
                 color: Colors.black26,
@@ -93,9 +113,23 @@ class QuizTile extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(title, style: TextStyle(color: Colors.white, fontSize: 17.0, fontWeight: FontWeight.w600),),
-                  SizedBox(height: 6.0,),
-                  Text(description, style: TextStyle(color: Colors.white, fontSize: 14.0, fontWeight: FontWeight.w400),),
+                  Text(
+                    title,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  SizedBox(
+                    height: 6.0,
+                  ),
+                  Text(
+                    description,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w400),
+                  ),
                 ],
               ),
             )
@@ -105,4 +139,3 @@ class QuizTile extends StatelessWidget {
     );
   }
 }
-

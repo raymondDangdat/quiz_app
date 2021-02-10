@@ -11,7 +11,7 @@ class AddQuestion extends StatefulWidget {
 
 class _AddQuestionState extends State<AddQuestion> {
   final _formKey = GlobalKey<FormState>();
-  String question, option1, option2, option3, option4;
+  String question = "", option1 = "", option2 = "", option3 = "", option4 = "";
   bool _isLoading = false;
 
   DatabaseService databaseService = new DatabaseService();
@@ -23,6 +23,7 @@ class _AddQuestionState extends State<AddQuestion> {
       });
 
       Map<String, String> questionMap = {
+        "question" : question,
         "option1": option1,
         "option2": option2,
         "option3": option3,
