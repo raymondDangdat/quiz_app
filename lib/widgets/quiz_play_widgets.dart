@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 class OptionTile extends StatefulWidget {
   final String option, description, correctAnswer, optionSelected;
-  OptionTile({@required this.optionSelected, @required this.correctAnswer, @required this.option, @required this.description});
+  OptionTile(
+      {@required this.optionSelected,
+      @required this.correctAnswer,
+      @required this.option,
+      @required this.description});
   @override
   _OptionTileState createState() => _OptionTileState();
 }
@@ -18,24 +22,34 @@ class _OptionTileState extends State<OptionTile> {
             height: 25.0,
             width: 25.0,
             decoration: BoxDecoration(
-              border: Border.all(color: widget.description == widget.optionSelected ?  widget.optionSelected == widget.correctAnswer ? Colors.green.withOpacity(0.7) : Colors.red.withOpacity(0.7) : Colors.grey, width: 1.5),
-              borderRadius: BorderRadius.circular(30.0)
-            ),
+                border: Border.all(
+                    color: widget.description == widget.optionSelected
+                        ? widget.optionSelected == widget.correctAnswer
+                            ? Colors.green.withOpacity(0.7)
+                            : Colors.red.withOpacity(0.7)
+                        : Colors.grey,
+                    width: 1.5),
+                borderRadius: BorderRadius.circular(30.0)),
             alignment: Alignment.center,
-            child: Text("${widget.option}",
-              style: TextStyle(color: widget.optionSelected == widget.description ? widget.correctAnswer == widget.optionSelected ? Colors.green.withOpacity(0.7) :
-                  Colors.red :
-              Colors.grey),),
-            
+            child: Text(
+              "${widget.option}",
+              style: TextStyle(
+                  color: widget.optionSelected == widget.description
+                      ? widget.correctAnswer == widget.optionSelected
+                          ? Colors.green.withOpacity(0.7)
+                          : Colors.red
+                      : Colors.grey),
+            ),
           ),
-          SizedBox(width: 8.0,),
-          Text(widget.description, style: TextStyle(fontSize: 17.0, color: Colors.black54),),
+          SizedBox(
+            width: 8.0,
+          ),
+          Text(
+            widget.description,
+            style: TextStyle(fontSize: 17.0, color: Colors.black54),
+          ),
         ],
       ),
     );
   }
 }
-
-
-
-
