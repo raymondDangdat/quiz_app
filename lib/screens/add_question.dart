@@ -23,7 +23,7 @@ class _AddQuestionState extends State<AddQuestion> {
       });
 
       Map<String, String> questionMap = {
-        "question" : question,
+        "question": question,
         "option1": option1,
         "option2": option2,
         "option3": option3,
