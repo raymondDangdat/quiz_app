@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trivial_app2/screens/play_quiz.dart';
 import 'package:trivial_app2/services/database.dart';
 import './create_quiz.dart';
 import 'package:trivial_app2/widgets/widgets.dart';
@@ -20,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
             stream: quizStream,
             builder: (context, snapshot) {
               return snapshot.data == null
-                  ? Container(child: Center(child: Text("No quiz available"),),)
+                  ? Container(child: Center(child: CircularProgressIndicator(backgroundColor: Colors.blue,),),)
                   : ListView.builder(
                 itemCount: snapshot.data.documents.length,
                   itemBuilder: (context, index){
@@ -71,30 +72,35 @@ class QuizTile extends StatelessWidget {
   QuizTile({@required this.imgUrl, @required this.title, @required this.description});
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 150.0,
-      margin: EdgeInsets.only(bottom: 8.0),
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-              child: Image.asset(imgUrl, width:  MediaQuery.of(context).size.width - 48.0, fit: BoxFit.cover,)),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.black26,
+    return InkWell(
+      onTap: (){
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PlayQuiz()));
+      },
+      child: Container(
+        height: 150.0,
+        margin: EdgeInsets.only(bottom: 8.0),
+        child: Stack(
+          children: [
+            ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
-            ),
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(title, style: TextStyle(color: Colors.white, fontSize: 17.0, fontWeight: FontWeight.w600),),
-                SizedBox(height: 6.0,),
-                Text(description, style: TextStyle(color: Colors.white, fontSize: 14.0, fontWeight: FontWeight.w400),),
-              ],
-            ),
-          )
-        ],
+                child: Image.asset(imgUrl, width:  MediaQuery.of(context).size.width - 48.0, fit: BoxFit.cover,)),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.black26,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(title, style: TextStyle(color: Colors.white, fontSize: 17.0, fontWeight: FontWeight.w600),),
+                  SizedBox(height: 6.0,),
+                  Text(description, style: TextStyle(color: Colors.white, fontSize: 14.0, fontWeight: FontWeight.w400),),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
