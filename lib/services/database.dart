@@ -7,6 +7,7 @@ class DatabaseService {
         .document(quizId)
         .setData(quizData)
         .catchError((e) {
+          print("ERROR!");
       print(e.toString());
     });
   }
@@ -22,7 +23,14 @@ class DatabaseService {
     });
   }
 
-  getQuizData() async {
-    return await Firestore.instance.collection("Quiz").snapshots();
+  getQuizTopics() async {
+    return Firestore.instance.collection("Quiz").snapshots();
   }
+
+  getQuizData(String quizId) async {
+    return Firestore.instance.collection("Quiz").document(quizId).collection(
+        "QNA").getDocuments();
+  }
+
+
 }
