@@ -77,19 +77,22 @@ class _PlayQuizState extends State<PlayQuiz> {
         ),
         brightness: Brightness.light,
       ),
-      body: Container(
-        child: Column(
-          children: [
-            questionsSnapshot.documents == null ?
-                Container() :
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
-                  itemCount: questionsSnapshot.documents.length,
-                    itemBuilder: (context, index){
-                    return QuizPlayTile(questionModel: getQuestionModelFromDatasnapshot(questionsSnapshot.documents[index]), index: index,);
-                    })
-          ],
+      body: SingleChildScrollView(
+        child: Container(
+          child: Column(
+            children: [
+              questionsSnapshot == null ?
+                  Container(child: Center(child: CircularProgressIndicator(backgroundColor: Colors.blue,),),) :
+                  ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 24.0),
+                    shrinkWrap: true,
+                    physics: ClampingScrollPhysics(),
+                    itemCount: questionsSnapshot.documents.length,
+                      itemBuilder: (context, index){
+                      return QuizPlayTile(questionModel: getQuestionModelFromDatasnapshot(questionsSnapshot.documents[index]), index: index,);
+                      })
+            ],
+          ),
         ),
       ),
     );
@@ -110,23 +113,119 @@ class _QuizPlayTileState extends State<QuizPlayTile> {
   Widget build(BuildContext context) {
     return Container(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        // mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text(widget.questionModel.question),
+          Text("Q${widget.index + 1} ${widget.questionModel.question}", style: TextStyle(fontSize: 17.0, color: Colors.black87),),
+          SizedBox(height: 12.0,),
+          InkWell(
+            onTap: (){
+              if(!widget.questionModel.answered){
+                if(widget.questionModel.option1 == widget.questionModel.correctAnswer){
+                  optionSelected = widget.questionModel.option1;
+                  widget.questionModel.answered = true;
+                  _correct = _correct + 1;
+                  _notAttempted = _notAttempted - 1;
+                  setState(() {
+
+                  });
+                }else{
+                  optionSelected = widget.questionModel.option1;
+                  widget.questionModel.answered = true;
+                  _inCorrect = _inCorrect + 1;
+                  _notAttempted = _notAttempted - 1;
+
+                  setState(() {
+
+                  });
+
+                }
+              }
+            },
+              child: OptionTile(optionSelected: optionSelected, correctAnswer: widget.questionModel.correctAnswer, option: "A", description: widget.questionModel.option1)),
+
           SizedBox(height: 4.0,),
           InkWell(
             onTap: (){
+              if(!widget.questionModel.answered){
+                if(widget.questionModel.option2 == widget.questionModel.correctAnswer){
+                  optionSelected = widget.questionModel.option2;
+                  widget.questionModel.answered = true;
+                  _correct = _correct + 1;
+                  _notAttempted = _notAttempted - 1;
+                  setState(() {
 
+                  });
+                }else{
+                  optionSelected = widget.questionModel.option2;
+                  widget.questionModel.answered = true;
+                  _inCorrect = _inCorrect + 1;
+                  _notAttempted = _notAttempted - 1;
+
+                  setState(() {
+
+                  });
+
+                }
+              }
             },
-              child: OptionTile(optionSelected: optionSelected, correctAnswer: widget.questionModel.option1, option: "A", description: widget.questionModel.option1)),
+              child: OptionTile(optionSelected: optionSelected, correctAnswer: widget.questionModel.correctAnswer, option: "B", description: widget.questionModel.option2)),
 
           SizedBox(height: 4.0,),
-          OptionTile(optionSelected: optionSelected, correctAnswer: widget.questionModel.option1, option: "B", description: widget.questionModel.option2),
+          InkWell(
+            onTap: (){
+              if(!widget.questionModel.answered){
+                if(widget.questionModel.option3 == widget.questionModel.correctAnswer){
+                  optionSelected = widget.questionModel.option3;
+                  widget.questionModel.answered = true;
+                  _correct = _correct + 1;
+                  _notAttempted = _notAttempted - 1;
+                  setState(() {
+
+                  });
+                }else{
+                  optionSelected = widget.questionModel.option3;
+                  widget.questionModel.answered = true;
+                  _inCorrect = _inCorrect + 1;
+                  _notAttempted = _notAttempted - 1;
+
+                  setState(() {
+
+                  });
+
+                }
+              }
+            },
+              child: OptionTile(optionSelected: optionSelected, correctAnswer: widget.questionModel.correctAnswer, option: "C", description: widget.questionModel.option3)),
 
           SizedBox(height: 4.0,),
-          OptionTile(optionSelected: optionSelected, correctAnswer: widget.questionModel.option1, option: "C", description: widget.questionModel.option3),
+          InkWell(
+            onTap: (){
+              if(!widget.questionModel.answered){
+                if(widget.questionModel.option4 == widget.questionModel.correctAnswer){
+                  optionSelected = widget.questionModel.option4;
+                  widget.questionModel.answered = true;
+                  _correct = _correct + 1;
+                  _notAttempted = _notAttempted - 1;
+                  setState(() {
 
-          SizedBox(height: 4.0,),
-          OptionTile(optionSelected: optionSelected, correctAnswer: widget.questionModel.option1, option: "D", description: widget.questionModel.option4),
+                  });
+                }else{
+                  optionSelected = widget.questionModel.option4;
+                  widget.questionModel.answered = true;
+                  _inCorrect = _inCorrect + 1;
+                  _notAttempted = _notAttempted - 1;
+
+                  setState(() {
+
+                  });
+
+                }
+              }
+            },
+              child: OptionTile(optionSelected: optionSelected, correctAnswer: widget.questionModel.correctAnswer, option: "D", description: widget.questionModel.option4)),
+
+          SizedBox(height: 20.0,)
         ],
       ),
     );
